@@ -4,6 +4,14 @@ import (
 	"fmt"
 )
 
+var (
+	Sec = 1
+	Min = Sec * 60
+	Hour = Min * 60
+	Day = Hour * 24
+	Week = Day * 7
+)
+
 type TimePeriod struct{
 	seconds int
 	minutes int
@@ -13,19 +21,29 @@ type TimePeriod struct{
 }
 // TODO: add inspect to TimePeriod
 
-func TimeLength(num int) (output TimePeriod) {
+func (tp TimePeriod) String() string {
+	return fmt.Sprintf("%d weeks, %d days, %d hours, %d minutes and %d seconds", tp.weeks, tp.days, tp.hours, tp.minutes, tp.seconds)
+}
+
+func rb_divmod(x, y int) (q, r int) {
+	q = x / y
+	r = x % y
+	return
+}
+
+func NewTimePeriod(num int) (output TimePeriod) {
+	output.weeks, num = rb_divmod(num, Week)
+	output.days, num = rb_divmod(num, Day)
+	output.hours, num = rb_divmod(num, Hour)
+	output.minutes, num = rb_divmod(num, Min)
+	output.seconds = num
+
 	return
 }
 
 func main() {
-	// 3 weeks, 5 days, 5 hours, 34 minutes and 2 seconds
-	sec := 1
-	min := sec * 60
-	hour := min * 60
-	day := hour * 24
-	week := day * 7
+	input := (Week * 3) + (Day * 0) + (Hour * 7) + (Min * 5) + (Sec * 2)
 
-	input := week * 3 + 5 * day + 7 * hour + 34 * min + 2 * sec
-	output := TimeLength(input)
+	output := NewTimePeriod(input)
 	fmt.Println(output)
 }
